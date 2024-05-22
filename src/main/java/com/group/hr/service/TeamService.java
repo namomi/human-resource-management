@@ -25,19 +25,18 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final EmployeeRepository employeeRepository;
 
-    public TeamDto save(TeamDto teamDto) {
+    public void save(TeamDto teamDto) {
         validation(teamDto);
         Team team = new Team(teamDto);
         existsByManager(teamDto, team);
-        Team savedTeam = teamRepository.save(team);
-        return convertToTeamDto(savedTeam);
+        teamRepository.save(team);
     }
 
     @Cacheable(key = "#pageable", value = KEY_TEAM)
     @Transactional(readOnly = true)
     public Page<TeamDto> findAllTeam(Pageable pageable) {
         Page<Team> teamPage = teamRepository.findAll(pageable);
-        return teamPage.map(this::convertToTeamDto);
+        return teamPage.map(TeamDto::of);
     }
 
     private void existsByManager(TeamDto teamDto, Team team) {
@@ -58,10 +57,4 @@ public class TeamService {
         }
     }
 
-    private TeamDto convertToTeamDto(Team team) {
-        return new TeamDto(
-                team.getName(),
-                team.getManager(),
-                team.getMemberCount());
-    }
 }

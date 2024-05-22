@@ -25,7 +25,6 @@ import static com.group.hr.type.Role.*;
 
 @Slf4j
 @AllArgsConstructor
-@Transactional
 @Service
 public class EmployeeService {
 
@@ -33,7 +32,8 @@ public class EmployeeService {
     private final TeamRepository teamRepository;
     private final AnnualLeaveRepository annualLeaveRepository;
 
-    public EmployeeDto save(EmployeeDto employeeDto) {
+    @Transactional
+    public void save(EmployeeDto employeeDto) {
         boolean exists = employeeRepository.existsByName(employeeDto.getName());
 
         checkEmployee(exists);
@@ -44,15 +44,9 @@ public class EmployeeService {
         setAnnualLeaves(savedEmployee);
 
         employeeRepository.save(savedEmployee);
-        return EmployeeDto.builder()
-                            .name(savedEmployee.getName())
-                            .teamName(savedEmployee.getTeamName())
-                            .role(savedEmployee.getRole())
-                            .birthday(savedEmployee.getBirthday())
-                            .workStartDate(savedEmployee.getWorkStartDate())
-                            .build();
     }
 
+    @Transactional
     public void assignEmployeeToTeam(Long employeeId, EmployeeDto employeeDto) {
         Employee employee = getEmployee(employeeId);
         Team team = getTeam(employeeDto);
@@ -64,7 +58,7 @@ public class EmployeeService {
     @Transactional(readOnly = true)
     public Page<EmployeeDto> getAllEmployee(Pageable pageable) {
         Page<Employee> employeePage = employeeRepository.findAll(pageable);
-        return employeePage.map(Employee::toDto);
+        return employeePage.map(EmployeeDto::of);
     }
 
     private static void checkEmployee(boolean exists) {

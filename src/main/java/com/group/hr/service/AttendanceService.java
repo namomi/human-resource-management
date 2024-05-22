@@ -26,7 +26,6 @@ import static com.group.hr.domain.CacheKey.KEY_EMPLOYEE;
 import static com.group.hr.type.ErrorCode.*;
 
 @RequiredArgsConstructor
-@Transactional
 @Service
 public class AttendanceService {
 
@@ -34,6 +33,7 @@ public class AttendanceService {
     private final AnnualLeaveRepository annualLeaveRepository;
     private final EmployeeRepository employeeRepository;
 
+    @Transactional
     public void attendance(Long employeeId) {
         Employee employee = getEmployee(employeeId);
 
@@ -50,6 +50,7 @@ public class AttendanceService {
                 .build());
     }
 
+    @Transactional
     public void gotOffWork(Long employeeId) {
         LocalDate today = LocalDate.now();
         Attendance attendance = getAttendance(employeeId, today);

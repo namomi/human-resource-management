@@ -32,12 +32,12 @@ public class OverTimeController {
                     content = {@Content(schema = @Schema(implementation = OvertimeDto.class))}),
             @ApiResponse(responseCode = "404", description = "근무 기록이 없습니다."),
     })
-    public ResponseEntity<List<OvertimeDto>> getMonthlyOvertime(@PathVariable
+    public List<OvertimeDto> getMonthlyOvertime(@PathVariable
                                                                 @Positive(message = "년도와 월을 입력해주세요")
                                                                 @Schema(description = "년도", example = "2024") int year,
                                                                 @PathVariable
                                                                 @Schema(description = "월", example = "03") int month)
             throws Exception {
-        return ResponseEntity.ok(overtimeService.getMonthlyOvertime(year, month));
+        return overtimeService.getMonthlyOvertime(year, month);
     }
 }

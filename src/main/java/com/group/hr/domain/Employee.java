@@ -59,11 +59,6 @@ public class Employee {
         this.birthday = employeeDto.getBirthday();
         this.workStartDate = employeeDto.getWorkStartDate();
     }
-
-    public EmployeeDto toDto() {
-        return new EmployeeDto(name, teamName, role, birthday, workStartDate);
-    }
-
     public int setTotalLeaves(int year) {
         return year == Year.now().getValue() ? 11 : 15;
     }

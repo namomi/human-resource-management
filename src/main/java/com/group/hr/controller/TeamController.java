@@ -30,12 +30,11 @@ public class TeamController {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "404", description = "팀 등록이 실패했습니다.."),
     })
-    public ResponseEntity<?> addTeam(@RequestBody
+    public void addTeam(@RequestBody
                                          @Parameter(description = "팀이름 필수입니다.")
                                          @Schema(description = "TeamDto", example = "teamName: stella")
                                          TeamDto request) {
-        TeamDto team = teamService.save(request);
-        return ResponseEntity.ok(team);
+        teamService.save(request);
     }
 
     @GetMapping
@@ -45,9 +44,8 @@ public class TeamController {
                     content = {@Content(schema = @Schema(implementation = Pageable.class))}),
             @ApiResponse(responseCode = "404", description = "팀 목록이 없습니다."),
     })
-    public ResponseEntity<?> findTeam(final Pageable pageable) {
-        Page<TeamDto> team = teamService.findAllTeam(pageable);
-        return ResponseEntity.ok(team);
+    public Page<TeamDto> findTeam(final Pageable pageable) {
+        return teamService.findAllTeam(pageable);
     }
 
 

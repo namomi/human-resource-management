@@ -14,13 +14,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -35,31 +37,20 @@ class TeamControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @Test
     void successCreateTeam() throws Exception {
         //given
         TeamDto teamDto = new TeamDto("3M", "하나", 1);
-        given(teamService.save(teamDto))
-                .willReturn(TeamDto.builder()
-                        .name("3M")
-                        .manager("하나")
-                        .memberCount(1)
-                        .build());
+        doNothing().when(teamService).save(teamDto);
+
         //when
-        //then
         mockMvc.perform(post("/team/add")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(
-                        new TeamDto("3M", "하나", 1)
-                )))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("3M"))
-                .andExpect(jsonPath("$.manager").value("하나"))
-                .andExpect(jsonPath("$.memberCount").value(1))
-                .andDo(print());
+                .content("{\"name\":\"3M\",\"manager\":\"하나\",\"memberCount\":1}"))
+            .andExpect(status().isOk());
+
+        //then
+        verify(teamService, times(1)).save(any(TeamDto.class));
     }
 
     @Test

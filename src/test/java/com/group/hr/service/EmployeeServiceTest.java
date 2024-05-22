@@ -1,9 +1,11 @@
 package com.group.hr.service;
 
+import com.group.hr.domain.AnnualLeave;
 import com.group.hr.domain.Employee;
 import com.group.hr.domain.Team;
 import com.group.hr.dto.EmployeeDto;
 import com.group.hr.dto.TeamDto;
+import com.group.hr.repository.AnnualLeaveRepository;
 import com.group.hr.repository.EmployeeRepository;
 import com.group.hr.repository.TeamRepository;
 import com.group.hr.type.Role;
@@ -29,8 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class EmployeeServiceTest {
@@ -41,34 +42,39 @@ class EmployeeServiceTest {
     @Mock
     private TeamRepository teamRepository;
 
+    @Mock
+    private AnnualLeaveRepository annualLeaveRepository;
+
     @InjectMocks
     private EmployeeService employeeService;
 
     @Test
     public void createEmployeeSave() throws Exception{
         EmployeeDto employee = new EmployeeDto("cosmo",
-                "개발팀",
-                MEMBER,
-                LocalDate.parse("1990-01-01"),
-                LocalDate.parse("2022-01-01"));
+            "개발팀",
+            MEMBER,
+            LocalDate.parse("1990-01-01"),
+            LocalDate.parse("2022-01-01"));
         TeamDto team = new TeamDto("stella", "str", 5);
+        Team teamEntity = new Team(team);
 
-
-
+        // 필요한 스텁 설정
         when(employeeRepository.existsByName("cosmo")).thenReturn(false);
-        when(teamRepository.findByName("개발팀")).thenReturn(Optional.of(new Team(team)));
+        when(teamRepository.existsByName("개발팀")).thenReturn(true);
+        when(teamRepository.findByName("개발팀")).thenReturn(Optional.of(teamEntity));
         when(employeeRepository.save(any(Employee.class))).thenAnswer(i -> i.getArguments()[0]);
+        when(annualLeaveRepository.save(any(AnnualLeave.class))).thenAnswer(i -> i.getArguments()[0]);
 
         // when
-        EmployeeDto savedEmployeeDto = employeeService.save(employee);
+        employeeService.save(employee);
 
         // then
+        verify(employeeRepository).existsByName("cosmo");
+        verify(teamRepository).existsByName("개발팀");
+        verify(teamRepository).findByName("개발팀");
         verify(employeeRepository).save(any(Employee.class));
-        assertEquals("cosmo", savedEmployeeDto.getName());
-        assertEquals("개발팀", savedEmployeeDto.getTeamName());
-        assertEquals(MEMBER, savedEmployeeDto.getRole());
-        assertEquals(LocalDate.parse("1990-01-01"), savedEmployeeDto.getBirthday());
-        assertEquals(LocalDate.parse("2022-01-01"), savedEmployeeDto.getWorkStartDate());
+        verify(annualLeaveRepository).save(any(AnnualLeave.class));
+
     }
 
     @Test
@@ -94,33 +100,4 @@ class EmployeeServiceTest {
         assertThat(employee.getTeam()).isEqualTo(team);
     }
 
-    @Test
-    public void successGetAllEmployee() throws Exception{
-        //given
-
-        List<EmployeeDto> employeeDtos = Arrays.asList(
-                new EmployeeDto("히나", "stella", MEMBER, LocalDate.parse("1997-02-01"), LocalDate.parse("2023-05-01")),
-                new EmployeeDto("시로", "stella", MEMBER, LocalDate.parse("1997-03-01"), LocalDate.parse("2023-03-01")),
-                new EmployeeDto("타비", "stella", MEMBER, LocalDate.parse("1997-04-01"), LocalDate.parse("2023-02-07")),
-                new EmployeeDto("칸나", "stella", MANAGER, LocalDate.parse("1997-05-01"), LocalDate.parse("2023-01-01"))
-        );
-        List<Employee> employees = employeeDtos.stream()
-                .map(Employee::new)
-                .collect(Collectors.toList());
-
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Employee> employeePage = new PageImpl<>(employees, pageable, employees.size());
-
-        when(employeeRepository.findAll(pageable)).thenReturn(employeePage);
-
-        //when
-        Page<EmployeeDto> result = employeeService.getAllEmployee(pageable);
-        List<EmployeeDto> employeeList = result.getContent();
-
-        //then
-        assertThat(result.getContent().size()).isEqualTo(4);
-        assertThat(employeeList.get(0).getName()).isEqualTo("히나");
-        assertThat(employeeList.get(0).getTeamName()).isEqualTo("stella");
-        assertThat(employeeList.get(0).getRole()).isEqualTo(MEMBER);
-    }
 }

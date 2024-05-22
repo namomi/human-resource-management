@@ -27,13 +27,12 @@ public class AnnualLeaveController {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "404", description = "연차 신청이 실패했습니다."),
     })
-    public ResponseEntity<?> applyForLeave(@Positive(message = "직원 id와 연차를 쓸 날짜와 연차 몇일인지를 입력해주세요")
+    public void applyForLeave(@Positive(message = "직원 id와 연차를 쓸 날짜와 연차 몇일인지를 입력해주세요")
                                            @PathVariable @Schema(description = "직원 ID", example = "1") Long employeeId,
                                            @RequestBody @Schema(description = "연차 쓸 날짜와 몇일간 쓸지",
                                                    example = "leaveDate : 2024-02-27, requestedLeaves : 3")
                                            AnnualLeaveDto annualLeaveDto) {
         annualLeaveService.applyForLeave(employeeId, annualLeaveDto.getLeaveDate(), annualLeaveDto.getRequestedLeaves());
-        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/total-leaves/{employeeId}")
@@ -42,10 +41,9 @@ public class AnnualLeaveController {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "404", description = "해당 직원이 없습니다."),
     })
-    public ResponseEntity<?> totalLeaves(
-                                @Positive(message = "직원 ID를 입력해주세요")
+    public int totalLeaves(@Positive(message = "직원 ID를 입력해주세요")
                                 @PathVariable
                                 @Schema(description = "직원 ID", example = "1") Long employeeId) {
-        return ResponseEntity.ok(annualLeaveService.getTotalLeaves(employeeId));
+        return annualLeaveService.getTotalLeaves(employeeId);
     }
 }

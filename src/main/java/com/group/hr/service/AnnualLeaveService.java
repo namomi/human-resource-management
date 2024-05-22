@@ -26,18 +26,14 @@ import static com.group.hr.type.ErrorCode.*;
 public class AnnualLeaveService {
     private final AnnualLeaveRepository annualLeaveRepository;
     private final EmployeeRepository employeeRepository;
-    private final TeamRepository teamRepository;
 
     public void applyForLeave(Long employeeId, LocalDate leaveDate, int requestedLeaves) {
         Employee employee = findEmployeeById(employeeId);
 
-        // 현재 날짜를 구함
         LocalDate currentDate = LocalDate.now();
 
-        // 직원의 팀을 구함
         Team team = getTeamOfEmployee(employee);
-
-        // 연차 정보를 찾거나, 존재하지 않는 경우 새로 생성
+        
         AnnualLeave annualLeave = getAnnualLeave(employee);
 
         // 연차 신청의 유효성을 검사

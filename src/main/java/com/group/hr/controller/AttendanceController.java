@@ -32,12 +32,11 @@ public class AttendanceController {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "404", description = "출근 등록이 실패했습니다."),
     })
-    public ResponseEntity<?> attendance(@PathVariable
+    public void attendance(@PathVariable
                                         @Positive(message = "직원 id는 필수입니다.")
                                         @Schema(description = "employeeId", example = "2")
                                         Long employeeId) {
         attendanceService.attendance(employeeId);
-        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/gotOffWork/{employeeId}")
@@ -46,12 +45,11 @@ public class AttendanceController {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "404", description = "퇴근 등록이 실패했습니다."),
     })
-    public ResponseEntity<?> gotOffWork(@PathVariable
+    public void gotOffWork(@PathVariable
                                         @Positive(message = "직원 id는 필수입니다.")
                                         @Schema(description = "employeeId", example = "2")
                                         Long employeeId) {
         attendanceService.gotOffWork(employeeId);
-        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/attendance/{employeeId}/{date}")
@@ -61,13 +59,12 @@ public class AttendanceController {
                     content = {@Content(schema = @Schema(implementation = AttendanceSummaryDto.class))}),
             @ApiResponse(responseCode = "404", description = "근무시간 조회를 실패했습니다.."),
     })
-    public ResponseEntity<AttendanceSummaryDto> getMonthlyAttendance(
+    public AttendanceSummaryDto getMonthlyAttendance(
             @Positive(message = "직원 id와 조회 하고 싶은 날짜를 입력해주세요")
             @PathVariable @Schema(description = "employeeId", example = "2") Long employeeId,
             @PathVariable @Schema(description = "date", example = "2024-02-01") String date) {
         LocalDate localDate = LocalDate.parse(date);
         YearMonth yearMonth = YearMonth.of(localDate.getYear(), localDate.getMonth());
-        AttendanceSummaryDto summary = attendanceService.getMonthlyAttendance(employeeId, yearMonth);
-        return ResponseEntity.ok(summary);
+        return attendanceService.getMonthlyAttendance(employeeId, yearMonth);
     }
 }

@@ -33,7 +33,7 @@ public class EmployeeController {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "404", description = "직원 등록이 실패했습니다."),
     })
-    public ResponseEntity<?> addEmployee(@RequestBody
+    public void addEmployee(@RequestBody
                                              @Parameter(description = "직원 이름, 직군, 회사 들오온 일자, 생일 필수입니다.")
                                              @Schema(description = "EmployeeDto", example = "name: 타비," +
                                                      " teamName: stella, " +
@@ -41,8 +41,7 @@ public class EmployeeController {
                                                      "birthday : 1998-02-01, " +
                                                      "workStartDate :2024-01-03" )
                                              EmployeeDto request) {
-        EmployeeDto employee = employeeService.save(request);
-        return ResponseEntity.ok(employee);
+        employeeService.save(request);
     }
 
     @PutMapping("/{employeeId}/team")
@@ -51,11 +50,10 @@ public class EmployeeController {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "404", description = "해당 팀이 없습니다."),
     })
-    public ResponseEntity<?> assignTeam(@PathVariable @Positive(message = "직원 ID와 팀 명을 입력해주세요")
+    public void assignTeam(@PathVariable @Positive(message = "직원 ID와 팀 명을 입력해주세요")
                                             @Schema(description = "직원 ID", example = "1") Long employeeId,
                                         @RequestBody @Schema(description = "팀 이름" , example = "spring") EmployeeDto employeeDto) {
         employeeService.assignEmployeeToTeam(employeeId, employeeDto);
-        return ResponseEntity.ok().build();
     }
 
     @GetMapping
@@ -65,9 +63,8 @@ public class EmployeeController {
                     content = {@Content(schema = @Schema(implementation = Pageable.class))}),
             @ApiResponse(responseCode = "404", description = "직원 목록이 없습니다."),
     })
-    public ResponseEntity<?> findEmployee(final Pageable pageable) {
-        Page<EmployeeDto> employee = employeeService.getAllEmployee(pageable);
-        return ResponseEntity.ok(employee);
+    public Page<EmployeeDto> findEmployee(final Pageable pageable) {
+        return  employeeService.getAllEmployee(pageable);
     }
 
 }

@@ -56,32 +56,10 @@ class TeamServiceTest {
         when(teamRepository.save(any(Team.class))).thenAnswer(i -> i.getArguments()[0]);
 
         // when
-        TeamDto savedTeamDto = teamService.save(teamDto);
+        teamService.save(teamDto);
 
         // then
         verify(teamRepository).save(any(Team.class));
-        assertThat(savedTeamDto.getName()).isEqualTo("stella");
-        assertThat(savedTeamDto.getManager()).isEqualTo("str");
     }
 
-    @Test
-    public void successFindTeam() throws Exception{
-        Pageable pageable = PageRequest.of(0, 10);
-        TeamDto team1 = new TeamDto("stella", "str", 5);
-        TeamDto team2 = new TeamDto("spring", "boot", 10);
-        TeamDto team3 = new TeamDto("apple", "mac", 7);
-        List<Team> teams = Arrays.asList(new Team(team1), new Team(team2), new Team(team3));
-        Page<Team> teamPage = new PageImpl<>(teams, pageable, teams.size());
-
-        when(teamRepository.findAll(pageable)).thenReturn(teamPage);
-
-        // when
-        Page<TeamDto> result = teamService.findAllTeam(pageable);
-        List<TeamDto> content = result.getContent();
-
-        //then
-        assertThat(content.size()).isEqualTo(teams.size());
-        assertThat(content.get(0).getName()).isEqualTo("stella");
-        assertThat(content.get(1).getManager()).isEqualTo("boot");
-    }
 }

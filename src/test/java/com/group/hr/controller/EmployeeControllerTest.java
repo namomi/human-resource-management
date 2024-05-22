@@ -49,15 +49,8 @@ class EmployeeControllerTest {
     public void successCreateEmployee() throws Exception{
         //given
         EmployeeDto employeeDto = new EmployeeDto("하나", "stella", MEMBER,
-                LocalDate.parse("1997-02-01"), LocalDate.parse("2024-02-01"));
-        given(employeeService.save(employeeDto))
-                .willReturn(EmployeeDto.builder()
-                        .name("하나")
-                        .teamName("stella")
-                        .role(MEMBER)
-                        .birthday(LocalDate.parse("1997-02-01"))
-                        .workStartDate(LocalDate.parse("2024-02-01"))
-                        .build());
+            LocalDate.parse("1997-02-01"), LocalDate.parse("2024-02-01"));
+        doNothing().when(employeeService).save(employeeDto);
 
         //when
         //then

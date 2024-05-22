@@ -1,6 +1,9 @@
 package com.group.hr.dto;
 
+import org.modelmapper.ModelMapper;
+
 import com.group.hr.domain.Team;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,15 +15,15 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TeamDto {
 
-    private String name;
+	private String name;
 
-    private String manager;
+	private String manager;
 
-    private Integer memberCount;
+	private Integer memberCount;
 
-    public TeamDto(Team team) {
-        this.name = team.getName();
-        this.manager = team.getManager();
-        this.memberCount = team.getMemberCount();
-    }
+	private static ModelMapper modelMapper;
+
+	public static TeamDto of(Team team) {
+		return modelMapper.map(team, TeamDto.class);
+	}
 }
