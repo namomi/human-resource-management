@@ -12,6 +12,19 @@
 - DB : `MySQL`
 - Cache: `Redis`
 
+# 주요 요구 API 명세서
+- [x] 1단계
+<img width="704" alt="스크린샷 2024-06-25 오전 9 07 16" src="https://github.com/namomi/human-resource-management/assets/65004844/1ab03113-f3c9-45cd-8101-9a560a535510">
+
+- [x] 2단계
+<img width="706" alt="스크린샷 2024-06-25 오전 9 09 02" src="https://github.com/namomi/human-resource-management/assets/65004844/d6672441-6674-497f-92a4-3966a8d97d00">
+
+- [x] 3단계
+<img width="694" alt="스크린샷 2024-06-25 오전 9 11 56" src="https://github.com/namomi/human-resource-management/assets/65004844/84d2ba4b-753d-41e0-a102-7024ed654ab3">
+
+- [x] 4단계
+<img width="709" alt="스크린샷 2024-06-25 오전 9 12 51" src="https://github.com/namomi/human-resource-management/assets/65004844/14eb1311-4f42-4ab9-ad10-b07e5e8bcdf1">
+
 # ⚙ 기술 스택
 - Spring Boot
 - Java
