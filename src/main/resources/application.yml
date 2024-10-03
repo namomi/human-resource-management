@@ -2,8 +2,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: "jdbc:mysql://localhost/human_resource_management"
-    username: root
-    password: 1234
+    username: ${USERNAME}
+    password: ${PASSWORD}
 
 
   devtools:
@@ -40,4 +40,4 @@ springdoc:
   paths-to-match:
 
 openHoliday:
-  key: ZsUOuGo2hD0bQmNmjDlqmSXLtGPUsPAs7VylIRKLXz3stGSU4N5V9a70MHge30XIknTL2mi6Augd0oIdaYfcUw%3D%3D
+  key: ${KEY}
